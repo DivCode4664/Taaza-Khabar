@@ -6,7 +6,11 @@ name: Check Unit Tests in Pull Request
 #       - synchronize
 on:
   pull_request:
-    types: [opened, reopened]
+    types:
+      - opened
+      - synchronize
+      - closed
+      - reopened
 jobs:
   check-tests:
     runs-on: ubuntu-latest
@@ -19,7 +23,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: adopt
-          java-version: '11'
+          java-version: "11"
       - name: Check for test files
         run: |
           # Use find to recursively search for all files with names matching a
