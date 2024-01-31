@@ -1,9 +1,5 @@
 name: Check Unit Tests in Pull Request
-# on:
-#   push:
-#     branches:
-#       - "**"
-"on":
+'on':
   pull_request:
     types:
       - opened
@@ -12,7 +8,7 @@ jobs:
   check-tests:
     runs-on: ubuntu-latest
     env:
-      CUSTOM_FLAG: "RED FLAG for unit-test"
+      CUSTOM_FLAG: RED FLAG for unit-test
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -20,12 +16,16 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: adopt
-          java-version: "11"
-        run: |
-          # Use find to recursively search for all files with names matching a test pattern
+          java-version: '11'
+        run: >
+          # Use find to recursively search for all files with names matching a
+          test pattern
+
           test_files=$(find . -type f -name '*Test*' -o -name '*Spec*')
 
+
           # Check if any test files are found
+
           if [ -n "$test_files" ]; then
             echo "Test files exist!"
           else
