@@ -1,13 +1,13 @@
 name: Check Unit Tests in Pull Request
-on:
-  push:
-    branches:
-      - "**"
-# "on":
-#   pull_request:
-#     types:
-#       - opened
-#       - synchronize
+# on:
+#   push:
+#     branches:
+#       - "**"
+"on":
+  pull_request:
+    types:
+      - opened
+      - synchronize
 jobs:
   check-tests:
     runs-on: ubuntu-latest
