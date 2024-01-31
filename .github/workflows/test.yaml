@@ -17,6 +17,7 @@ jobs:
         with:
           distribution: adopt
           java-version: '11'
+      - name: Check for test files
         run: >
           # Use find to recursively search for all files with names matching a
           test pattern
