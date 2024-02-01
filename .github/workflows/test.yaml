@@ -2,8 +2,9 @@ name: Check Files in Testing Branch
 
 on:
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      - synchronize
 
 jobs:
   check-files:
