@@ -58,4 +58,8 @@ jobs:
         run: |
           # List all staged files
           STAGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }})
-          echo "Staged Files: this is $STAGED_FILES"
+          if echo "$STAGED_FILES"; then
+            echo "files exist!"
+          else
+            echo "not exist"
+          fi
