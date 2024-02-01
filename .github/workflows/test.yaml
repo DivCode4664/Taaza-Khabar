@@ -15,14 +15,14 @@ jobs:
 
     - name: Get feature branch name
       run: |
-        FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
+        test="${{ github.event.pull_request.head.ref }}"
         MAIN_BRANCH="${{ github.event.pull_request.base.ref }}"
-        # echo "FEATURE_BRANCH=$FEATURE_BRANCH" >> $GITHUB_ENV
+        # echo "test=$test" >> $GITHUB_ENV
         # echo "MAIN_BRANCH=$MAIN_BRANCH" >> $GITHUB_ENV
 
     - name: Get latest commit on feature branch
       run: |
-        LATEST_COMMIT=$(git log --pretty=format:"%H" -n 1 "$FEATURE_BRANCH")
+        LATEST_COMMIT=$(git log --pretty=format:"%H" -n 1 "$test")
         # echo "LATEST_COMMIT=$LATEST_COMMIT" >> $GITHUB_ENV
         echo "Latest commit on the feature branch: $LATEST_COMMIT"
 
