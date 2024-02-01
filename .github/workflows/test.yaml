@@ -1,32 +1,35 @@
 name: Check Unit Tests in Pull Request
+
 on:
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      - synchronize
+
 jobs:
   check-tests:
     runs-on: ubuntu-latest
-    env:
-      CUSTOM_FLAG: RED FLAG for unit-test
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: adopt
-          java-version: "11"
-      - name: Check for test files
+
+      - name: List Changed Files
+        id: list_files
         run: |
-          # Use find to recursively search for all files with names matching a
-          test pattern
+          # Get the list of changed files between the current commit and the base commit
+          CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }})
 
-          test_files=$(find . -type f -name '*Test*' -o -name '*Spec*')
+          # Set the output variable for later steps
+          echo "::set-output name=files::${CHANGED_FILES}"
 
+      - name: Check for Test Files
+        run: |
+          # Retrieve the list of changed files from the previous step
+          CHANGED_FILES="${{ steps.list_files.outputs.files }}"
 
-          # Check if any test files are found
-
-          if [ -n "$test_files" ]; then
+          # Check if any test files are present in the changed files
+          if echo "$CHANGED_FILES" | grep -E '.*Test.*|.*Spec.*'; then
             echo "Test files exist!"
           else
             echo "Error: Pull request must include at least one test file."
