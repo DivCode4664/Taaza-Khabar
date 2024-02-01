@@ -15,13 +15,13 @@
 #         uses: actions/checkout@v2
 #         with:
 #           ref: ${{ github.event.pull_request.head.ref }}
-          
+
 #       - name: List Test Files
 #         id: list_test_files
 #         run: |
 #           # List test files using a pattern that matches your test file naming conventions
 #           TEST_FILES=$(find . -type f -name '*Test*' -o -name '*Spec*')
-          
+
 #           # Set the output variable for later steps
 #           echo "::set-output name=test_files::${TEST_FILES}"
 
@@ -38,13 +38,12 @@
 #             exit 1
 #           fi
 
-
 name: List Staged Files
 
 on:
   push:
     branches:
-      - main  # Adjust the branch as needed
+      - main # Adjust the branch as needed
 
 jobs:
   list-staged-files:
@@ -56,10 +55,17 @@ jobs:
 
       - name: List Staged Files
         run: |
-          # List all staged files
-          STAGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }})
-          if echo "$STAGED_FILES"; then
-            echo "files exist!"
+          # # List all staged files
+          # STAGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }})
+          # if echo "$STAGED_FILES"; then
+          #   echo "files exist!"
+          # else
+          #   echo "not exist"
+          # fi
+          staged_files=$(git diff --name-only --cached)
+          if [ -n "$staged_files" ]; then
+            echo "Staged Files:"
+            echo "$staged_files"
           else
-            echo "not exist"
+            echo "No files staged."
           fi
