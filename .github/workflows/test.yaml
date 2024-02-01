@@ -11,25 +11,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Pull Request Branch
         uses: actions/checkout@v2
-
-      - name: List Changed Files
-        id: list_files
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          
+      - name: List Test Files
+        id: list_test_files
         run: |
-          # Get the list of changed files between the current commit and the base commit
-          CHANGED_FILES=$(git diff --name-only -- HEAD ${{ github.sha }})
-
+          # List test files using a pattern that matches your test file naming conventions
+          TEST_FILES=$(find . -type f -name '*Test*' -o -name '*Spec*')
+          
           # Set the output variable for later steps
-          echo "::set-output name=files::${CHANGED_FILES}"
+          echo "::set-output name=test_files::${TEST_FILES}"
 
       - name: Check for Test Files
         run: |
-          # Retrieve the list of changed files from the previous step
-          CHANGED_FILES="${{ steps.list_files.outputs.files }}"
+          # Retrieve the list of test files from the previous step
+          TEST_FILES="${{ steps.list_test_files.outputs.test_files }}"
 
-          # Check if any test files are present in the changed files
-          if echo "$CHANGED_FILES" | grep -E '.*Test.*|.*Spec.*'; then
+          # Check if any test files are present
+          if [ -n "$TEST_FILES" ]; then
             echo "Test files exist!"
           else
             echo "Error: Pull request must include at least one test file."
