@@ -2,9 +2,8 @@ name: Check Files in Testing Branch
 
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
+    branches:
+      - testing
 
 jobs:
   check-files:
@@ -18,7 +17,7 @@ jobs:
         id: list_files
         run: |
           # Determine the point where the main and testing branches diverged
-          DIVERGENCE_COMMIT=$(git merge-base ${{ github.event.before }})
+          DIVERGENCE_COMMIT=$(git merge-base HEAD ${{ github.event.before }})
 
           # List the changed files since the divergence point
           CHANGED_FILES=$(git diff --name-only $DIVERGENCE_COMMIT)
@@ -33,8 +32,9 @@ jobs:
 
           # Check if any specific conditions are met
           # For example, you can use grep to filter files based on a pattern
-          if echo "$CHANGED_FILES"; then
-            echo "$CHANGED_FILES"
+          if echo "$CHANGED_FILES" | grep -q 'pattern_to_match'; then
+            echo "At least one file matches the specified pattern."
           else
             echo "No files match the specified pattern."
+            exit 1  # Exit with an error status if needed
           fi
