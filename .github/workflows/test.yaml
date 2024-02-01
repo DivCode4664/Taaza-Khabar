@@ -57,5 +57,5 @@ jobs:
       - name: List Staged Files
         run: |
           # List all staged files
-          STAGED_FILES=$(git diff --name-only --cached)
+          STAGED_FILES=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }})
           echo "Staged Files: this is $STAGED_FILES"
