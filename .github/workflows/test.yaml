@@ -62,7 +62,8 @@ jobs:
           # else
           #   echo "not exist"
           # fi
-          staged_files=$(git diff --name-only --cached)
+
+          staged_files=$(git diff --name-only --cached > staged_files.txt)
           if [ -n "$staged_files" ]; then
             echo "Staged Files:"
             echo "$staged_files"
