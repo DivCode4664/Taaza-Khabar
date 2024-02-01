@@ -1,40 +1,37 @@
-name: Check Files in Testing Branch
+name: Check Latest Commit on Feature Branch
 
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
+    branches:
+      - main
 
 jobs:
-  check-files:
+  check-latest-commit:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: List Changed Files
-        id: list_files
-        run: |
-          # Determine the point where the main and testing branches diverged
-          DIVERGENCE_COMMIT=$(git merge-base HEAD ${{ github.event.before }})
+    - name: Get feature branch name
+      run: |
+        FEATURE_BRANCH="${{ github.event.pull_request.head.ref }}"
+        MAIN_BRANCH="${{ github.event.pull_request.base.ref }}"
+        # echo "FEATURE_BRANCH=$FEATURE_BRANCH" >> $GITHUB_ENV
+        # echo "MAIN_BRANCH=$MAIN_BRANCH" >> $GITHUB_ENV
 
-          # List the changed files since the divergence point
-          CHANGED_FILES=$(git diff --name-only $DIVERGENCE_COMMIT)
+    - name: Get latest commit on feature branch
+      run: |
+        LATEST_COMMIT=$(git log --pretty=format:"%H" -n 1 "$FEATURE_BRANCH")
+        # echo "LATEST_COMMIT=$LATEST_COMMIT" >> $GITHUB_ENV
+        echo "Latest commit on the feature branch: $LATEST_COMMIT"
 
-          # Set the output variable for later steps
-          echo "::set-output name=files::${CHANGED_FILES}"
-
-      - name: Check Files in Testing Branch
-        run: |
-          # Retrieve the list of changed files from the previous step
-          CHANGED_FILES="${{ steps.list_files.outputs.files }}"
-
-          # Check if any specific conditions are met
-          # For example, you can use grep to filter files based on a pattern
-          if echo "$CHANGED_FILES"; then
-            echo "$CHANGED_FILES"
-          else
-            echo "No files match the specified pattern."
-          fi
+    - name: Check for test files in the latest commit
+      run: |
+        CHANGED_FILES=$(git diff --name-only $LATEST_COMMIT^ $LATEST_COMMIT)
+        
+        if echo "$CHANGED_FILES" | grep -E '.*Test\.java$' &>/dev/null; then
+          echo "Test files found in the latest commit."
+        else
+          echo "No test files found in the latest commit. Please add tests."
+        fi
