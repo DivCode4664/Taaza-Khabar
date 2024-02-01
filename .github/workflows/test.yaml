@@ -58,4 +58,4 @@ jobs:
         run: |
           # List all staged files
           STAGED_FILES=$(git diff --cached)
-          echo "Staged Files: $STAGED_FILES"
+          echo "Staged Files: this is $STAGED_FILES"
