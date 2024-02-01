@@ -18,7 +18,7 @@ jobs:
         id: list_files
         run: |
           # Determine the point where the main and testing branches diverged
-          DIVERGENCE_COMMIT=$(git merge-base origin/main HEAD)
+          DIVERGENCE_COMMIT=$(git merge-base HEAD ${{ github.event.before }})
 
           # List the changed files since the divergence point
           CHANGED_FILES=$(git diff --name-only $DIVERGENCE_COMMIT)
