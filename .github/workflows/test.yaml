@@ -1,41 +1,3 @@
-# name: Check Latest Commit on Feature Branch
-
-# on:
-#   pull_request:
-#     branches:
-#       - main
-
-# jobs:
-#   check-latest-commit:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v2
-
-#     - name: Get feature branch name
-#       run: |
-#         test="${{ github.event.pull_request.head.ref }}"
-#         MAIN_BRANCH="${{ github.event.pull_request.base.ref }}"
-#         # echo "test=$test" >> $GITHUB_ENV
-#         # echo "MAIN_BRANCH=$MAIN_BRANCH" >> $GITHUB_ENV
-
-#     - name: Get latest commit on feature branch
-#       run: |
-#         LATEST_COMMIT=$(git log --pretty=format:"%H" -n 1 "$test")
-#         # echo "LATEST_COMMIT=$LATEST_COMMIT" >> $GITHUB_ENV
-#         echo "Latest commit on the feature branch: $LATEST_COMMIT"
-
-#     - name: Check for test files in the latest commit
-#       run: |
-#         CHANGED_FILES=$(git diff --name-only $LATEST_COMMIT^ $LATEST_COMMIT)
-        
-#         if echo "$CHANGED_FILES" | grep -E '.*Test\.java$' &>/dev/null; then
-#           echo "Test files found in the latest commit."
-#         else
-#           echo "No test files found in the latest commit. Please add tests."
-#         fi
-
 name: Check Unit Tests in Pull Request
 
 on:
@@ -51,7 +13,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
+
     - name: Check for unit tests in PR
       run: |
         test_results=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "tests/")
